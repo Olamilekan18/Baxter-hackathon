@@ -39,7 +39,7 @@ export default function FormSection() {
       }
 
       toast.success("Login successful!");
-      router.push("/stock");
+      router.push("/portfolio");
     } catch (error) {
       setLoading(false);
       console.log(error)

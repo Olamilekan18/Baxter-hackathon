@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from 'react';
 
-// Type declarations for YT if not already available globally
 
 type Course = {
   id: string;
@@ -48,7 +47,6 @@ export default function CourseCard({ course }: CourseCardProps) {
   useEffect(() => {
     if (!showVideo || !videoId || typeof window === 'undefined') return;
 
-    // Load YouTube IFrame API only once
     if (!window.YT || !window.YT.Player) {
       const tag = document.createElement('script');
       tag.src = 'https://www.youtube.com/iframe_api';
@@ -70,7 +68,6 @@ export default function CourseCard({ course }: CourseCardProps) {
     };
 
     return () => {
-      // Cleanup player state change intervals
       if (intervalRef.current) clearInterval(intervalRef.current);
       window.onYouTubeIframeAPIReady = () => {};
     };
@@ -93,7 +90,7 @@ const onPlayerStateChange = (event: YT.OnStateChangeEvent) => {
       }
     }, 1000);
 
-    return () => clearInterval(interval); // This won't clear unless used inside useEffect cleanup
+    return () => clearInterval(interval); 
   }
 };
 
