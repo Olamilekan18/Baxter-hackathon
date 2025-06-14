@@ -13,12 +13,7 @@ type Course = {
   duration?: string;
 };
 
-declare global {
-  interface Window {
-    YT: typeof YT;
-    onYouTubeIframeAPIReady: () => void;
-  }
-}
+
 
 export default function CoursesPage() {
   const [progress, setProgress] = useState<Record<string, number>>({});
@@ -154,14 +149,7 @@ export default function CoursesPage() {
     setWatchProgress((watched.length / courses.length) * 100);
   }, [courses.length]);
 
-  const trackProgress = (courseId: string) => {
-    const newProgress = {
-      ...progress,
-      [courseId]: Math.min((progress[courseId] || 0) + 25, 100),
-    };
-    setProgress(newProgress);
-    localStorage.setItem('courseProgress', JSON.stringify(newProgress));
-  };
+ 
 
   return (
     <div className="min-h-screen bg-131712">

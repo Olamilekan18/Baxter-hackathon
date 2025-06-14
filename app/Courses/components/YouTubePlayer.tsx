@@ -7,13 +7,6 @@ type YouTubePlayerProps = {
   className?: string;
 };
 
-declare global {
-  interface Window {
-    YT: any;
-    onYouTubeIframeAPIReady: () => void;
-  }
-}
-
 export default function YouTubePlayer({ videoId, className = '' }: YouTubePlayerProps) {
   const playerRef = useRef<HTMLDivElement>(null);
 
@@ -35,7 +28,14 @@ export default function YouTubePlayer({ videoId, className = '' }: YouTubePlayer
     };
 
     return () => {
-      if (window.YT) window.YT = undefined;
+      // Safe cleanup
+      if ('YT' in window) {
+        delete (window as any).YT;
+      }
+
+      if ('onYouTubeIframeAPIReady' in window) {
+        delete (window as any).onYouTubeIframeAPIReady;
+      }
     };
   }, [videoId]);
 

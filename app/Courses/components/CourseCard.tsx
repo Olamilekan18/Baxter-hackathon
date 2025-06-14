@@ -2,27 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 
-// Add to global.d.ts or top of CourseCard.tsx
-declare global {
-  namespace YT {
-    class Player {
-      constructor(elementId: string | HTMLElement, options: any);
-      getCurrentTime(): number;
-      getDuration(): number;
-      seekTo(seconds: number): void;
-      // Add other methods as needed
-    }
-    var PlayerState: {
-      PLAYING: number;
-      // Add other states if needed
-    };
-  }
-  interface Window {
-    YT: typeof YT;
-    onYouTubeIframeAPIReady: () => void;
-  }
-}
-export {};
+// Type declarations for YT if not already available globally
 
 type Course = {
   id: string;
@@ -36,14 +16,14 @@ type CourseCardProps = {
   course: Course;
 };
 
-
-
 export default function CourseCard({ course }: CourseCardProps) {
   const [expanded, setExpanded] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [player, setPlayer] = useState<YT.Player | null>(null);
   const [progress, setProgress] = useState(0);
   const playerRef = useRef<HTMLDivElement>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
   const videoId = course.youtubeurl?.match(
     /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?]+)/
   )?.[1];
@@ -65,55 +45,58 @@ export default function CourseCard({ course }: CourseCardProps) {
     }
   }, [progress, course.id]);
 
-  // YouTube Player API
   useEffect(() => {
-    if (!showVideo || !videoId) return;
+    if (!showVideo || !videoId || typeof window === 'undefined') return;
 
-    const tag = document.createElement('script');
-    tag.src = 'https://www.youtube.com/iframe_api';
-    const firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+    // Load YouTube IFrame API only once
+    if (!window.YT || !window.YT.Player) {
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      const firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag?.parentNode?.insertBefore(tag, firstScriptTag);
+    }
 
-   window.onYouTubeIframeAPIReady = () => {
-  if (playerRef.current) {
-    const ytPlayer = new window.YT.Player(playerRef.current, {
-      videoId,
-      events: {
-        onReady: onPlayerReady,
-        onStateChange: onPlayerStateChange,
-      },
-    });
-    setPlayer(ytPlayer);
-  }
-};
+    window.onYouTubeIframeAPIReady = () => {
+      if (playerRef.current) {
+        const ytPlayer = new window.YT.Player(playerRef.current, {
+          videoId,
+          events: {
+            onReady: onPlayerReady,
+            onStateChange: onPlayerStateChange,
+          },
+        });
+        setPlayer(ytPlayer);
+      }
+    };
 
     return () => {
-      if (window.onYouTubeIframeAPIReady) {
-        window.onYouTubeIframeAPIReady = () => {};
-      }
+      // Cleanup player state change intervals
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      window.onYouTubeIframeAPIReady = () => {};
     };
   }, [showVideo, videoId]);
 
-  const onPlayerReady = (event: any) => {
-    if (progress > 0) {
-      const duration = event.target.getDuration();
-      event.target.seekTo((duration * progress) / 100);
-    }
-  };
+  const onPlayerReady = (event: YT.OnReadyEvent) => {
+  if (progress > 0) {
+    const duration = event.target.getDuration();
+    event.target.seekTo((duration * progress) / 100, true);
+  }
+};
 
-  const onPlayerStateChange = (event: any) => {
-    if (event.data === window.YT.PlayerState.PLAYING) {
-      const interval = setInterval(() => {
-        if (player && player.getCurrentTime && player.getDuration) {
-          const newProgress =
-            (player.getCurrentTime() / player.getDuration()) * 100;
-          setProgress(Math.min(newProgress, 100));
-        }
-      }, 1000);
+const onPlayerStateChange = (event: YT.OnStateChangeEvent) => {
+  if (event.data === window.YT.PlayerState.PLAYING) {
+    const interval = setInterval(() => {
+      if (player && player.getCurrentTime && player.getDuration) {
+        const newProgress =
+          (player.getCurrentTime() / player.getDuration()) * 100;
+        setProgress(Math.min(newProgress, 100));
+      }
+    }, 1000);
 
-      return () => clearInterval(interval);
-    }
-  };
+    return () => clearInterval(interval); // This won't clear unless used inside useEffect cleanup
+  }
+};
+
 
   const extractLearnSection = (content: string) => {
     const learnMatch = content.match(
@@ -128,7 +111,6 @@ export default function CourseCard({ course }: CourseCardProps) {
 
   const handleVideoClick = () => {
     setShowVideo(true);
-    // Track clicked videos in localStorage
     const watched = JSON.parse(localStorage.getItem('watchedVideos') || '[]');
     if (!watched.includes(course.id)) {
       watched.push(course.id);
@@ -138,7 +120,6 @@ export default function CourseCard({ course }: CourseCardProps) {
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
-      {/* Video Player or Thumbnail */}
       <div className="relative aspect-video">
         {showVideo && videoId ? (
           <div className="relative w-full h-full">
@@ -245,7 +226,6 @@ export default function CourseCard({ course }: CourseCardProps) {
           )}
         </div>
 
-        {/* Progress and Action Buttons */}
         <div className="mt-auto">
           {!videoId && (
             <button
@@ -258,7 +238,7 @@ export default function CourseCard({ course }: CourseCardProps) {
           {expanded && (
             <button
               onClick={() => setExpanded(false)}
-              className="mt-2 w-full  bg-[#131712] text-[#53D22C] hover:text-primary-dark font-medium py-1 px-4 rounded transition-colors duration-300"
+              className="mt-2 w-full bg-[#131712] text-[#53D22C] hover:text-primary-dark font-medium py-1 px-4 rounded transition-colors duration-300"
             >
               Show Less
             </button>

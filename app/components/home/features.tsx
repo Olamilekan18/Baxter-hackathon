@@ -142,7 +142,7 @@ export default function Features() {
                 Mobile-Friendly
               </dt>
               <dd className="mt-2 text-base leading-7 text-gray-200">
-                Access Baxter anytime, anywhere, whether you're on the go or on
+                Access Baxter anytime, anywhere, whether youre on the go or on
                 the job, thanks to our fully mobile-friendly architecture,
                 ensuring a seamless experience across all devices.
               </dd>
