@@ -30,6 +30,8 @@ Future Fixes and Features:
 3. Set up `.env ` with your api keys
 4. Run `npm run dev`
 
+Try out here: https://baxter-hackathon-hy9p.vercel.app/
+
 Contributing: 
    The code for the Baxter platform is free to use, test and deploy. This repository can be forked, pulled from and committed to with ease and without any additional licenses. The team is committed to making financial literacy available to users from all walks and aspects of life. 
 
