@@ -1,5 +1,4 @@
 export default async function DetailsLayout({
-  params,
   children,
 }: {
   params: Promise<{ ticker: string }>;

@@ -2,6 +2,28 @@
 
 import { useState, useRef, useEffect } from 'react';
 
+// Add to global.d.ts or top of CourseCard.tsx
+declare global {
+  namespace YT {
+    class Player {
+      constructor(elementId: string | HTMLElement, options: any);
+      getCurrentTime(): number;
+      getDuration(): number;
+      seekTo(seconds: number): void;
+      // Add other methods as needed
+    }
+    var PlayerState: {
+      PLAYING: number;
+      // Add other states if needed
+    };
+  }
+  interface Window {
+    YT: typeof YT;
+    onYouTubeIframeAPIReady: () => void;
+  }
+}
+export {};
+
 type Course = {
   id: string;
   title: string;
@@ -14,10 +36,12 @@ type CourseCardProps = {
   course: Course;
 };
 
+
+
 export default function CourseCard({ course }: CourseCardProps) {
   const [expanded, setExpanded] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
-  const [player, setPlayer] = useState<any>(null);
+  const [player, setPlayer] = useState<YT.Player | null>(null);
   const [progress, setProgress] = useState(0);
   const playerRef = useRef<HTMLDivElement>(null);
   const videoId = course.youtubeurl?.match(
@@ -50,16 +74,18 @@ export default function CourseCard({ course }: CourseCardProps) {
     const firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
 
-    window.onYouTubeIframeAPIReady = () => {
-      const ytPlayer = new window.YT.Player(playerRef.current, {
-        videoId,
-        events: {
-          onReady: onPlayerReady,
-          onStateChange: onPlayerStateChange,
-        },
-      });
-      setPlayer(ytPlayer);
-    };
+   window.onYouTubeIframeAPIReady = () => {
+  if (playerRef.current) {
+    const ytPlayer = new window.YT.Player(playerRef.current, {
+      videoId,
+      events: {
+        onReady: onPlayerReady,
+        onStateChange: onPlayerStateChange,
+      },
+    });
+    setPlayer(ytPlayer);
+  }
+};
 
     return () => {
       if (window.onYouTubeIframeAPIReady) {

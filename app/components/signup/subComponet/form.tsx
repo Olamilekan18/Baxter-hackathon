@@ -16,7 +16,7 @@ export default function SignUpForm() {
 
   const router = useRouter();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e : React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!username || !password || !email) {
@@ -52,8 +52,8 @@ export default function SignUpForm() {
       });
 
       if (res.ok) {
-        const form = e.target;
-        form.reset();
+        const form = e.target as HTMLFormElement;
+form.reset();
 
         router.push("/stock");
 

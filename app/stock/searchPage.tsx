@@ -16,7 +16,7 @@ interface item {
 export default function StockSearchPage() {
   const [input_value, changeInput] = useState("");
   const [results, setResults] = useState<item[][]>([]);
-
+//fixed build errors here
   useEffect(() => {
     function fromFMP(searchTerm: string) {
       const string_response = Array(
@@ -48,7 +48,7 @@ export default function StockSearchPage() {
 
       <div className="search_results">
         {results[0] && results[0].length > 0 ? (
-          results[0].map((item: any) => (
+          results[0].map((item: item) => (
             <div
               className="grid grid-cols-12 gap-4 md:gap-6 p-3 md:p-6 my-4 md:my-6 items-center bg-[#1F2328] border-b border-gray-700 hover:bg-[#1d3f13] rounded-lg transition-all shadow-lg transform hover:scale-105"
               key={item.Ticker}

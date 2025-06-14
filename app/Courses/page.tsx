@@ -15,7 +15,7 @@ type Course = {
 
 declare global {
   interface Window {
-    YT: any;
+    YT: typeof YT;
     onYouTubeIframeAPIReady: () => void;
   }
 }
