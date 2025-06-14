@@ -1,6 +1,5 @@
 import StockHomeNav from "../components/stock/stockNav";
-import { SideNav } from "../stock/layout";
-
+import SideNav from "../components/stock/SideNav";
 
 
 export default function AiChat({
