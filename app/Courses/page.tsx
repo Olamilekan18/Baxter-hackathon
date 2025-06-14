@@ -16,7 +16,7 @@ type Course = {
 
 
 export default function CoursesPage() {
-  const [progress, setProgress] = useState<Record<string, number>>({});
+  // const [progress, setProgress] = useState<Record<string, number>>({});
   const [courses, setCourses] = useState<Course[]>([]);
   const [watchProgress, setWatchProgress] = useState(0)
 
@@ -140,8 +140,8 @@ export default function CoursesPage() {
 
     setCourses(courseData);
     // Load progress from localStorage
-    const savedProgress = localStorage.getItem('courseProgress');
-    if (savedProgress) setProgress(JSON.parse(savedProgress));
+    // const savedProgress = localStorage.getItem('courseProgress');
+    // if (savedProgress) setProgress(JSON.parse(savedProgress));
   }, []);
 
   useEffect(() => {
