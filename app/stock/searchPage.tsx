@@ -5,9 +5,17 @@ import { useEffect, useState } from "react";
 import ZeroMatch from "./zeroMatch";
 import data from "@/logos_array";
 
+interface item {
+  Name: string,
+  Ticker: string,
+  url: string,
+  Sector: string,
+  Website: string,
+}
+
 export default function StockSearchPage() {
   const [input_value, changeInput] = useState("");
-  const [results, setResults] = useState<any[]>([]);
+  const [results, setResults] = useState<item[][]>([]);
 
   useEffect(() => {
     function fromFMP(searchTerm: string) {

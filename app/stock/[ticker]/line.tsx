@@ -8,7 +8,6 @@ import {
   LinearScale,
   PointElement,
   LineElement,
-  plugins,
 } from "chart.js";
 
 ChartJS.register(
@@ -86,7 +85,7 @@ export function ALineChart(props: {
         data={{
           labels: label_arr.toReversed().map(({ date }: { date: string }) => {
             if (date.length > 11) {
-              let text = date.slice(11);
+              const text = date.slice(11);
               return text;
             } else {
               return date;

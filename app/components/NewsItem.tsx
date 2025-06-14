@@ -1,9 +1,9 @@
 import { newsItem } from '../type_definitions';
 
 export default function NewsItem(props: { object: newsItem }) {
-  let object = props.object;
-  let { id, image, headline, datetime, url, source, summary } = object;
-  let dateVal = new Date(datetime * 1000);
+  const object = props.object;
+  const { id, image, headline, datetime, url, source, summary } = object;
+  const dateVal = new Date(datetime * 1000);
   return (
     <div
       key={id}

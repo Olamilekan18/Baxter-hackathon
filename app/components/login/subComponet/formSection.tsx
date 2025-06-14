@@ -42,6 +42,7 @@ export default function FormSection() {
       router.push("/stock");
     } catch (error) {
       setLoading(false);
+      console.log(error)
       toast.error("An unexpected error occurred. Please try again.");
     }
   };

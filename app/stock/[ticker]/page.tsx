@@ -1,4 +1,3 @@
-import ChartHeader from "@/app/components/stock/chartHeader";
 import APIRender from "./apiCalls";
 
 

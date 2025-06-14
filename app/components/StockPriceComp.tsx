@@ -1,8 +1,6 @@
 import {
-  companyNews,
   companyProfile,
   quoteHL,
-  earnings,
   deltaPrice,
   getMarketStatus,
 } from "../stock/[ticker]/apiLoaders";

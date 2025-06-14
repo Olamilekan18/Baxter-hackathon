@@ -3,7 +3,6 @@ import Link from "next/link";
 import {
   fetchDataLongTerm,
   fetchChartData24H,
-  giveDateString,
 } from "./apiLoaders";
 
 export default async function LineChart(props: {
@@ -17,7 +16,7 @@ export default async function LineChart(props: {
     new_arr = stock_numbers.map(({ close }) => close);
   }
   if (props.timeframe && props.timeframe > 1) {
-    let LTD = await fetchDataLongTerm(props.symbol, props.timeframe);
+    const LTD = await fetchDataLongTerm(props.symbol, props.timeframe);
     stock_numbers = LTD.historical;
     new_arr = stock_numbers.map(({ close }: { close: number }) => close);
   }

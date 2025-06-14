@@ -11,9 +11,9 @@ export default async function FinancialsPage({
   const financials = await fetchFinancials(ticker);
   const { metric } = financials;
   const { beta, epsAnnual, peAnnual, currentDividendYieldTTM } = metric;
-  const { name, currency, marketCapitalization, finnhubIndustry } =
+  const { name, marketCapitalization, finnhubIndustry } =
     companyProfileRes;
-  const { c, h, l, pc, t, o } = priceReport;
+  const { c, h, l, o } = priceReport;
   return (
     <div className=" text-white p-6 rounded-2xl space-y-6">
       <div>

@@ -26,7 +26,7 @@ export default async function Analytics({
   function findMatch() {
     const mostRecent = analysis[0];
     let answer = "";
-    for (let y in mostRecent) {
+    for (const y in mostRecent) {
       if (mostRecent[y] == sorted[0] && typeof mostRecent[y] == "number") {
         answer = y;
       }
